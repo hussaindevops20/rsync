@@ -22,10 +22,18 @@ jobs:
           echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -p ${{ secrets.SERVER_PORT }} ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
-
+      - name: using floder owner
+        run: |
+          ssh -p ${{ secrets.SERVER_PORT }} \
+          ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} \
+          "sudo chown -R ${{ secrets.SERVER_USER }} /var/www/html/wp-content"
       - name: Deploy wp-content to server
         run: |
           rsync -avz --delete \
           -e "ssh -p ${{ secrets.SERVER_PORT }}" \
           ./wp-content/ \
           ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/var/www/html/wp-content/
+          ssh -p ${{ secrets.SERVER_PORT }} \
+          ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} \
+          "sudo chown -R www-data:www-data /var/www/html/wp-content"
+      
