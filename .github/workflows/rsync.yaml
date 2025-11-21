@@ -33,7 +33,9 @@ jobs:
           -e "ssh -p ${{ secrets.SERVER_PORT }}" \
           ./wp-content/ \
           ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/var/www/html/wp-content/
+      - name: Changing the floder ownership to www-data
+        run: |
           ssh -p ${{ secrets.SERVER_PORT }} \
           ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} \
-          "sudo chown -R www-data:www-data /var/www/html/wp-content"
+          "sudo chown -R root:root /var/www/html/wp-content"
       
